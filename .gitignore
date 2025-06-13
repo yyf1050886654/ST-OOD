@@ -127,8 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/carla_models
-/drift_models
+/*_models
 /plots_drift
 /plots_output
 /plots_output_old
