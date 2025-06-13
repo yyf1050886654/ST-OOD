@@ -29,27 +29,25 @@ bi3dof_simple_test_validate = {
     "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
     # "model_file": "./carla_models/bi3dof-simple-600epoch-6seq.pt",
     "network": "simple",
-    "test_clips": "F:/lsm/time-series-OOD-main/data/data/carla_data/carla_features/calibration.calibration",
+    "test_clips": "F:/data/data/snowy_dataset/st-vae-icad-feature/calibration.calibration",
     "frames_per_clip": frame_lens['validate']
 }
 bi3dof_simple_test_in = {
     "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
     # "model_file": "./carla_models/bi3dof-simple-600epoch-6seq.pt",
     "network": "simple",
-    "test_clips": "F:/lsm/data/carla_features/in.test",
+    "test_clips": "F:/data/data/snowy_dataset/st-vae-icad-feature/in.test",
     "frames_per_clip": frame_lens['in']
 }
 
-
 def getOutBi3DOF(type_of_OOD):
-    features_folder = "F:/lsm/data/carla_features/"  # Change to "../NTU_features_rainy_only/" for rainy
+    features_folder = "F:/data/data/snowy_dataset/st-vae-icad-feature/"  # Change to "../NTU_features_rainy_only/" for rainy
     bi3dof_simple_test_out = {
-        # "model_file" : "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
+        # "model_file" : lambda model_save_folder: "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
         "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
-        # "model_file": "./carla_models/bi3dof-simple-600epoch-6seq.pt",
         "network": "simple",
-        "test_clips": features_folder + "{}.test".format(type_of_OOD),  # "data/nuscenes-v1.0-mini.test",
-        "frames_per_clip": frame_lens[type_of_OOD]
+        "test_clips": features_folder + "{}.test".format('out'),  # "data/nuscenes-v1.0-mini.test",
+        "frames_per_clip": frame_lens['out_snowy']
     }
     return bi3dof_simple_test_out
 
@@ -81,7 +79,6 @@ def calc_p_value(test_ce_loss_value, cal_set_ce_loss):
 def run(type_of_OOD):
 
     calc_cal_ce_loss()
-    calc_save_path = f"./snowy_models/nc_calibration_vae_600epoch.npy"
     # [print(item) for item in calc_loss]
     print('\n', type_of_OOD, '\n')
     scores_of_only_in_points = []
@@ -150,10 +147,10 @@ def run(type_of_OOD):
     time_end = time.time();
     print("time_sum: ",time_end-time_start)
     print(f'(AUROC, fnr): ({auroc}, {fnr})')
-    print(f'(precision, recall, f1,Fpr): ({precision}, {recall}, {f1},{fpr})')
+    print(f'(precision, recall, f1, Fpr): ({precision}, {recall}, {f1},{fpr})')
 
 
 if __name__ == "__main__":
-    for type_of_OOD in ['out_rainy']:
+    for type_of_OOD in ['out_snowy']:
         run(type_of_OOD)
 

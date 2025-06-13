@@ -81,10 +81,10 @@ class FeatureAbstraction:
 
 
 if __name__ == "__main__":
-    trainroot = 'F:/data/data/rainy_dataset/training/'
-    testroot = 'F:/data/data/rainy_dataset/testing/'
-    dstroot = 'F:/data/data/rainy_dataset/xin_feature/'
-    calibrationroot = 'F:/data/data/rainy_dataset/calibration/'
+    trainroot = 'F:/data/data/snowy_dataset/training/'
+    testroot = 'F:/data/data/snowy_dataset/testing/'
+    dstroot = 'F:/data/data/snowy_dataset/st-vae-icad-feature/'
+    calibrationroot = 'F:/data/data/snowy_dataset/calibration/'
     try:
         os.mkdir(dstroot)
     except:

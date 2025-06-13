@@ -93,32 +93,25 @@ frame_lens = {
     'out': [123, 122, 123, 121, 124, 123, 121, 121, 122, 123, 123, 121, 123,122, 121, 121, 122, 122, 123, 123, 123, 122, 122, 123, 122, 122, 122],
     # 'out': [50, 50, 50, 50, 50, 51, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50, 50, 50, 50],
     'validate': [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]}
-bi3dof_simple_test_validate = {
-    # "model_file" : lambda model_save_folder: "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
-    "model_file": "./replay_models/bi3dof-simple-600epoch-6seq.pt",
-    "network": "simple",
-    "test_clips": "F:/pycharmworkspace/time-series-OOD-main/data/data/replay_dataset/carla_features_all/validate.test",
-    # "data/nuscenes-v1.0-mini.test",
-    "frames_per_clip": frame_lens['validate']
-}
+
 bi3dof_simple_test_in = {
     # "model_file" : lambda model_save_folder: "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
-    "model_file": "./replay_models/bi3dof-simple-600epoch-6seq.pt",
+    "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
     "network": "simple",
-    "test_clips": "F:/pycharmworkspace/time-series-OOD-main/data/data/replay_dataset/carla_features_all/in.test",
+    "test_clips": "F:/data/data/snowy_dataset/st-vae-icad-feature/in.test",
     # "data/nuscenes-v1.0-mini.test",
     "frames_per_clip": frame_lens['in']
 }
 
 
 def getOutBi3DOF(type_of_OOD):
-    features_folder = "F:/pycharmworkspace/time-series-OOD-main/data/data/replay_dataset/carla_features_all/"  # Change to "../NTU_features_rainy_only/" for rainy
+    features_folder = "F:/data/data/snowy_dataset/st-vae-icad-feature/"  # Change to "../NTU_features_rainy_only/" for rainy
     bi3dof_simple_test_out = {
         # "model_file" : lambda model_save_folder: "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
-        "model_file": "./replay_models/bi3dof-simple-600epoch-6seq.pt",
+        "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
         "network": "simple",
-        "test_clips": features_folder + "{}.test".format(type_of_OOD),  # "data/nuscenes-v1.0-mini.test",
-        "frames_per_clip": frame_lens[type_of_OOD]
+        "test_clips": features_folder + "{}.test".format('out'),  # "data/nuscenes-v1.0-mini.test",
+        "frames_per_clip": frame_lens['out']
     }
     return bi3dof_simple_test_out
 
@@ -181,9 +174,9 @@ def run(type_of_OOD):
     except:
         pass
     second_half_of_type_of_OOD = type_of_OOD.split('_')[-1]
-    if second_half_of_type_of_OOD == "replay":
-        np.save(f'./npz_saved/{second_half_of_type_of_OOD}_win_in_NTU', scores_of_only_in_points)
-        np.save(f'./npz_saved/{second_half_of_type_of_OOD}_win_out_NTU', scores_of_only_out_points)
+    # if second_half_of_type_of_OOD == "replay":
+    np.save(f'./npz_saved/{second_half_of_type_of_OOD}_win_in_NTU', scores_of_only_in_points)
+    np.save(f'./npz_saved/{second_half_of_type_of_OOD}_win_out_NTU', scores_of_only_out_points)
 
     TNR, tau = getTNR(scores_of_only_in_points, scores_of_only_out_points)
     det_delay = get_det_delay_for_detected_traces(iD_scores_2D_list_of_OOD_traces_only, tau)
@@ -191,5 +184,6 @@ def run(type_of_OOD):
     print(f'(AUROC, TNR, Avg Det Delay): ({auroc}, {TNR}, {det_delay})')
 
 if __name__ == "__main__":
-    for type_of_OOD in ['out_rainy', 'out_snowy', 'out_foggy', 'out_night']:
-        run(type_of_OOD)
+    run('out_snowy')
+    # for type_of_OOD in ['out_rainy', 'out_snowy', 'out_foggy', 'out_night']:
+    #     run(type_of_OOD)

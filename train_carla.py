@@ -127,6 +127,6 @@ frame_lens = {
     'validate': [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]}
 args = init_param()
 args.training = True
-args.data_file = "F:/data/data/rainy_dataset/xin_feature/train.train"  # "data/nuscenes-v1.0-mini.train"
+args.data_file = "F:/data/data/snowy_dataset/st-vae-icad-feature/train.train"  # "data/nuscenes-v1.0-mini.train"
 args.n_seq = 141
 run()
