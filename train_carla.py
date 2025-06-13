@@ -42,7 +42,7 @@ def init_param():
     parser.add_argument("--mu2", type=float, default=0., help="Mean optic flow value in the vertical direction")
     parser.add_argument("--var1", type=float, default=1., help="Varaince in the horizontal direction")
     parser.add_argument("--var2", type=float, default=1., help="Varaince in the horizontal? (vertical) direction")
-    parser.add_argument("--model_save_folder", type=str, default="./snowy_models",
+    parser.add_argument("--model_save_folder", type=str, default="./replay_models",
                         help="set different folder names only for drift clip length ablations.")
     args = parser.parse_args()
 

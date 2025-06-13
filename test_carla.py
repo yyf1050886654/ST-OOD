@@ -90,8 +90,8 @@ def compute_score(model, args):
 frame_lens = {
     'train': [149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149, 149],
     'in': [122, 121, 121, 122, 122, 121, 122, 123, 123, 121,123,123,124],
-    'out': [123, 122, 123, 121, 124, 123, 121, 121, 122, 123, 123, 121, 123,122, 121, 121, 122, 122, 123, 123, 123, 122, 122, 123, 122, 122, 122],
-    # 'out': [50, 50, 50, 50, 50, 51, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50, 50, 50, 50],
+    # 'out': [123, 122, 123, 121, 124, 123, 121, 121, 122, 123, 123, 121, 123,122, 121, 121, 122, 122, 123, 123, 123, 122, 122, 123, 122, 122, 122],
+    'out': [50, 50, 50, 50, 50, 51, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,50, 50, 50, 50, 50],
     'validate': [130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130]}
 
 bi3dof_simple_test_in = {
@@ -105,10 +105,10 @@ bi3dof_simple_test_in = {
 
 
 def getOutBi3DOF(type_of_OOD):
-    features_folder = "F:/data/data/snowy_dataset/st-vae-icad-feature/"  # Change to "../NTU_features_rainy_only/" for rainy
+    features_folder = "F:/data/data/replay_dataset/st-vae-icad-feature/"  # Change to "../NTU_features_rainy_only/" for rainy
     bi3dof_simple_test_out = {
         # "model_file" : lambda model_save_folder: "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
-        "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
+        "model_file": "./replay_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
         "network": "simple",
         "test_clips": features_folder + "{}.test".format('out'),  # "data/nuscenes-v1.0-mini.test",
         "frames_per_clip": frame_lens['out']
@@ -184,6 +184,6 @@ def run(type_of_OOD):
     print(f'(AUROC, TNR, Avg Det Delay): ({auroc}, {TNR}, {det_delay})')
 
 if __name__ == "__main__":
-    run('out_snowy')
+    run('out_replay')
     # for type_of_OOD in ['out_rainy', 'out_snowy', 'out_foggy', 'out_night']:
     #     run(type_of_OOD)
