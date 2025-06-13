@@ -132,3 +132,5 @@ dmypy.json
 /plots_drift
 /plots_output
 /plots_output_old
+/snowy_models
+/snowy_models_new
