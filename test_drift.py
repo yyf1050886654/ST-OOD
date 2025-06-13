@@ -1,14 +1,11 @@
 import numpy as np
 import argparse
 import torch
-from torch.cuda import current_blas_handle
-from network import Bi3DOF, Encoder, Decoder
-from datasets import seed, Bi3DOFDataset
-from more_utils import make2D, OOD_score_to_iD_score, min_of_each_row, compute_epsilon_on_iD_traces_only, \
-    get_det_delay_for_detected_traces, scan_iD_scores_of_windows_and_print_list, collapse_to_1D, getTNR
+from model.network import Bi3DOF, Encoder, Decoder
+from utils import seed, Bi3DOFDataset
+from utils.more_utils import make2D, OOD_score_to_iD_score, get_det_delay_for_detected_traces, collapse_to_1D, getTNR
 import os
 from sklearn.metrics import roc_curve, roc_auc_score
-import matplotlib.pyplot as plt
 
 '''
 	Inputs are test clips are hdf5 files prodiced byfeature_abstraction.py.

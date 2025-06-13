@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 import argparse
-import numpy as np
+import os
+
 import torch
 from torch import optim
 from torch.utils.data import DataLoader
-from network import Bi3DOF, Encoder, Decoder
-from datasets import *
-from utils import progress_bar
+
+from data_provider.datasets import Bi3DOFDataset
+from model.network import Bi3DOF, Encoder, Decoder
+from utils.utils import progress_bar
 
 '''
 
@@ -67,6 +69,7 @@ def run():
     # load data
     train_id = Bi3DOFDataset(args)
     train_size = len(train_id)
+    print(train_size)
     train_loader = torch.utils.data.DataLoader(train_id, batch_size=args.episode_size, shuffle=True, num_workers=0)
 
     # initialize network and optimizor

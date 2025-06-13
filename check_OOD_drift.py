@@ -1,13 +1,13 @@
-from matplotlib import pyplot as plt
 import time
-from datasets import *
+from random import seed
+
+import numpy as np
 
 from test_drift import compute_score, load_model
-from scripts.martingales import SMM, RPM
-from more_utils import make2D, OOD_score_to_iD_score, \
-    get_det_delay_for_detected_traces, collapse_to_1D, getTNR,get_binary_labels_with_95_TPR
-from more_utils import getPrecisionRecallF1
-from sklearn.metrics import roc_curve, roc_auc_score
+from scripts.martingales import SMM
+from utils.more_utils import make2D, OOD_score_to_iD_score, \
+    get_det_delay_for_detected_traces, collapse_to_1D, getTNR,get_binary_labels_with_95_TPR, getPrecisionRecallF1
+from sklearn.metrics import roc_auc_score
 
 frame_lens = {
     'train': [49, 74, 49, 49, 49, 49, 59, 59, 59, 59, 59, 49, 59, 59, 59, 59, 59, 49, 49, 49, 49, 48, 49, 49],

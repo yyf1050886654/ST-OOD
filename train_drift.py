@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 import argparse
-import numpy as np
+import os
+
 import torch
 from torch import optim
 from torch.utils.data import DataLoader
-from network import Bi3DOF, Encoder, Decoder
-from datasets import *
-from utils import progress_bar
+
+from data_provider.datasets import Bi3DOFDataset
+from model.network import Bi3DOF, Encoder, Decoder
+from utils.utils import progress_bar
 
 '''
 

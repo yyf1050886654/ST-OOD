@@ -1,12 +1,9 @@
 '''Some helper functions for training, including:
     - progress_bar: progress bar mimic xlua.progress.
 '''
-import os
+import shutil
 import sys
 import time
-import math
-import torch
-import shutil
 
 term_width, _ = shutil.get_terminal_size()
 

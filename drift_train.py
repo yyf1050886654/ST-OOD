@@ -1,15 +1,14 @@
 import argparse
-import numpy as np
+import os
+
 import torch
 from torch import optim
 from torch.utils.data import DataLoader
-from network import Bi3DOF, Encoder, Decoder
-from datasets import *
-from utils import progress_bar
-from test_drift import compute_score, load_model
-from more_utils import make2D, OOD_score_to_iD_score, min_of_each_row, compute_epsilon_on_iD_traces_only, \
-    get_det_delay_for_detected_traces, scan_iD_scores_of_windows_and_print_list, collapse_to_1D, getTNR, \
-    getPrecisionRecallF1
+
+from data_provider.datasets import Bi3DOFDataset
+from model.network import Bi3DOF, Encoder, Decoder
+from test_drift import load_model
+from utils.utils import progress_bar
 
 SEED = 2
 frame_lens = {
