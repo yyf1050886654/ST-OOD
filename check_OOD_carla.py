@@ -5,8 +5,7 @@ import numpy as np
 
 from test_carla import compute_score, load_model
 from scripts.martingales import SMM
-from utils.more_utils import make2D, OOD_score_to_iD_score, \
-    get_det_delay_for_detected_traces, collapse_to_1D, getTNR,get_binary_labels_with_95_TPR, getPrecisionRecallF1
+from utils.more_utils import make2D, OOD_score_to_iD_score, collapse_to_1D, getPrecisionRecallF1
 from sklearn.metrics import roc_auc_score
 seed = 42
 random.seed(seed)

@@ -168,44 +168,7 @@ class Encoder(GaussianEncoderBase):
         nn.init.constant_(self.grp2_linear.bias, 0.0)
 
     def forward(self, x):
-        # x_grp1 = x[:, 0, :, :, :]
-        # x_grp2 = x[:, 1, :, :, :]
-        #
-        # output_grp1 = self.grp1_conv1(x_grp1)
-        # output_grp1 = self.grp1_conv1_bn(output_grp1)
-        # output_grp1 = self.grp1_conv1_ac(output_grp1)
-        # output_grp1 = self.grp1_conv2(output_grp1)
-        # output_grp1 = self.grp1_conv2_bn(output_grp1)
-        # output_grp1 = self.grp1_conv2_ac(output_grp1)
-        # output_grp1 = self.grp1_conv3(output_grp1)
-        # output_grp1 = self.grp1_conv3_bn(output_grp1)
-        # output_grp1 = self.grp1_conv3_ac(output_grp1)
-        # output_grp1 = self.grp1_conv4(output_grp1)
-        # output_grp1 = self.grp1_conv4_bn(output_grp1)
-        # output_grp1 = self.grp1_conv4_ac(output_grp1)
-        # output_grp1 = output_grp1.view(output_grp1.size(0), -1)
-        # output_grp1 = self.grp1_linear(output_grp1)
-        #
-        # output_grp2 = self.grp2_conv1(x_grp2)
-        # output_grp2 = self.grp2_conv1_bn(output_grp2)
-        # output_grp2 = self.grp2_conv1_ac(output_grp2)
-        # output_grp2 = self.grp2_conv2(output_grp2)
-        # output_grp2 = self.grp2_conv2_bn(output_grp2)
-        # output_grp2 = self.grp2_conv2_ac(output_grp2)
-        # output_grp2 = self.grp2_conv3(output_grp2)
-        # output_grp2 = self.grp2_conv3_bn(output_grp2)
-        # output_grp2 = self.grp2_conv3_ac(output_grp2)
-        # output_grp2 = self.grp2_conv4(output_grp2)
-        # output_grp2 = self.grp2_conv4_bn(output_grp2)
-        # output_grp2 = self.grp2_conv4_ac(output_grp2)
-        # output_grp2 = output_grp2.view(output_grp2.size(0), -1)
-        # output_grp2 = self.grp2_linear(output_grp2)
-        #
-        # return output_grp1.chunk(2, 1), output_grp2.chunk(2, 1)
-        # noisy_x = x + torch.randn(x.size())  # 添加高斯噪声
         noisy_x = x + torch.randn(x.size(), device=x.device)  # 添加高斯噪声
-
-        # 继续你的前向传播逻辑
         x_grp1 = noisy_x[:, 0, :, :, :]
         x_grp2 = noisy_x[:, 1, :, :, :]
 
