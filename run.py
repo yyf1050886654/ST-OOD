@@ -5,6 +5,7 @@ import os
 import torch
 
 from data_provider.feature_abstraction_carla import FeatureAbstraction
+from exp.ood_detection_carla import train
 
 '''
 
@@ -34,9 +35,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # Basic Config
     parser.add_argument("--task", type=str, default="carla", help="carla or drift")
-    parser.add_argument("--carla_task", type=str, default="snowy", help="Carla dataset subtask")
+    parser.add_argument("--carla_task", type=str, default="foggy", help="Carla dataset subtask")
     # Dataset
-    parser.add_argument("--data_path_prefix", type=str, default="'F:/data/data/", help="Dataset path prefix")
+    parser.add_argument("--data_path_prefix", type=str, default="F:/data/data", help="Dataset path prefix")
     # Model Parameters
     parser.add_argument("--episode_size", type=int, default=12, help="number of videos in one mini-batch")
     parser.add_argument("--n_seq", type=int, default=141, help="number of sequence/window to sample from one video")
@@ -67,13 +68,14 @@ if __name__ == '__main__':
     args.data_path = os.path.join(args.data_path_prefix, "{}_dataset".format(args.carla_task))
 
     # data pre_process
-    feature_precess_root = os.path.join(args.data_path, "st-vae-icad-feature")
-    if not os.path.exists(feature_precess_root):
-        os.mkdir(feature_precess_root)
+    args.features_folder = os.path.join(args.data_path, "st-vae-icad-feature")
+    if not os.path.exists(args.features_folder):
+        os.mkdir(args.features_folder)
         FeatureAbstraction(os.path.join(args.data_path, "training"),
                            os.path.join(args.data_path, "testing"),
-                           os.path.join(args.data_path, "calibration"), feature_precess_root)
+                           os.path.join(args.data_path, "calibration"), args.features_folder)
 
     args.training = True
-    args.data_file = os.path.join(feature_precess_root, "train.train")
-    train()
+    args.data_file = os.path.join(args.features_folder, "train.train")
+    args.model_save_folder = "{}_models".format(args.carla_task)
+    train(args)

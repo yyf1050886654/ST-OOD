@@ -1,11 +1,15 @@
 import os
 
+import numpy as np
 import torch
+from sklearn.metrics import roc_curve, roc_auc_score
 from torch import optim
 from torch.utils.data import DataLoader
 
 from data_provider.datasets import Bi3DOFDataset
 from model.network import Encoder, Decoder, Bi3DOF
+from test_carla import frame_lens, compute_score, load_model
+from utils.more_utils import getTNR, get_det_delay_for_detected_traces, make2D, OOD_score_to_iD_score, collapse_to_1D
 from utils.utils import progress_bar
 
 
@@ -52,21 +56,27 @@ def train(args):
         pass
 
     torch.save(vae.state_dict(),
-               "{}/bi3dof-{}-{}epoch-{}seq-seed{}-{}nd.pt".format(args.model_save_folder, args.latentprior, epoch + 1,
+               "{}/bi3dof-{}-{}epoch-{}seq-seed{}-{}nd.pt".format(args.model_save_folder, args.latentprior, args.epochs,
                                                              args.n_seqs[0], args.seed,args.nd))
 
+def getOutBi3DOF(args, in_flag):
+    prefix = "in" if in_flag else "out_replay" if (args.task == 'carla' and args.carla_task == 'replay') else "out"
+    return {
+        "model_file" : "{}/bi3dof-{}-{}epoch-{}seq-seed{}-{}nd.pt".format(args.model_save_folder, args.latentprior, args.epochs,
+                                                             args.n_seqs[0], args.seed,args.nd),
+        "network": "simple",
+        "test_clips": os.path.join(args.features_folder, "{0}.{0}".format("in" if in_flag else "out")),
+        "frames_per_clip": frame_lens[prefix]
+    }
 
-def test(type_of_OOD):
-    print('\n', type_of_OOD, '\n')
+def test(args):
     # ROC curve calculation
     iD_scores_all = []; GTs_all = []
     scores_of_only_in_points = []
     scores_of_only_out_points = []
 
-    for idx, bi3dof_simple in enumerate([bi3dof_simple_test_in, getOutBi3DOF(type_of_OOD)]):
-
+    for idx, bi3dof_simple in enumerate([getOutBi3DOF(args, in_flag=True), getOutBi3DOF(args, in_flag=False)]):
         # i.e. for traces in [iD traces, OOD traces]
-        print("idx: ",idx)
         print("bi3dof_simple: ",bi3dof_simple)
         model, args = load_model(bi3dof_simple)
         h,v = compute_score(model, args)
@@ -113,7 +123,7 @@ def test(type_of_OOD):
         os.mkdir('./npz_saved/')
     except:
         pass
-    second_half_of_type_of_OOD = type_of_OOD.split('_')[-1]
+    second_half_of_type_of_OOD = "carla_ood".split('_')[-1]
     # if second_half_of_type_of_OOD == "replay":
     np.save(f'./npz_saved/{second_half_of_type_of_OOD}_win_in_NTU', scores_of_only_in_points)
     np.save(f'./npz_saved/{second_half_of_type_of_OOD}_win_out_NTU', scores_of_only_out_points)

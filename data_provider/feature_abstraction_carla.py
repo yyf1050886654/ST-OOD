@@ -18,22 +18,22 @@ class FeatureAbstraction:
             self.store = []
             frame_lens = {}
             if "train" in phase:
-                path = trainroot
+                path = trainroot + os.sep
                 locs = glob(path + "*")
                 names = locs
                 phase_type = "train"
             elif "in" in phase:
-                path = testroot + phase + "/"
+                path = testroot + os.sep + phase + os.sep
                 locs = glob(path + "*")
                 names = locs
                 phase_type = "in"
             elif "out" in phase:
-                path = testroot + phase + "/"
+                path = testroot + os.sep + phase + os.sep
                 locs = glob(path + "*")
                 names = locs
                 phase_type = "out"
             elif "calibration" in phase:
-                path = calibrationroot
+                path = calibrationroot + os.sep
                 locs = glob(path + "*")
                 names = locs
                 phase_type = "calibration"
