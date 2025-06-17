@@ -1,4 +1,5 @@
 import os
+import time
 
 import numpy as np
 import torch
@@ -6,10 +7,13 @@ from sklearn.metrics import roc_curve, roc_auc_score
 from torch import optim
 from torch.utils.data import DataLoader
 
+from check_OOD_carla import calc_cal_ce_loss, calc_p_value
 from data_provider.datasets import Bi3DOFDataset
 from model.network import Encoder, Decoder, Bi3DOF
+from scripts.martingales import SMM
 from test_carla import frame_lens, compute_score, load_model
-from utils.more_utils import getTNR, get_det_delay_for_detected_traces, make2D, OOD_score_to_iD_score, collapse_to_1D
+from utils.more_utils import getTNR, get_det_delay_for_detected_traces, make2D, OOD_score_to_iD_score, collapse_to_1D, \
+    getPrecisionRecallF1
 from utils.utils import progress_bar
 
 
@@ -132,3 +136,71 @@ def test(args):
     det_delay = get_det_delay_for_detected_traces(iD_scores_2D_list_of_OOD_traces_only, tau)
 
     print(f'(AUROC, TNR, Avg Det Delay): ({auroc}, {TNR}, {det_delay})')
+
+
+
+def check_ood_carla(args):
+
+    calc_cal_ce_loss()
+    scores_of_only_in_points = []
+    scores_of_only_out_points = []
+    iD_scores_all = []
+    GTs_all = []
+
+    for idx, bi3dof_simple in enumerate([getOutBi3DOF(args, in_flag=True), getOutBi3DOF(args, in_flag=False)]):
+        time_start = time.time()
+        calc_cal_ce_loss()
+        calc_save_path = "./{}_models/nc_calibration_vae_600epoch.npy".format(args.task)
+        model, args = load_model(bi3dof_simple)
+        h, v = compute_score(model, args)
+        test_loss_list = [h[i] + v[i]  for i in range(len(h))]
+        OOD_scores_flattened = []
+        i = 0
+        m_array = np.array([]).reshape(0, 2)
+        p_array = np.array([]).reshape(0, 2)
+        nd = 4
+        while i < (len(bi3dof_simple['frames_per_clip'])):#13
+            j = 0
+            while j < 94:
+                z = 0
+                smm = SMM(4)
+                while z < 4:
+                    index = i * 106 + j + z*nd
+
+                    test_loss = test_loss_list[index]
+                    calc_loss = np.load(calc_save_path)
+                    p = calc_p_value(test_loss, calc_loss)
+                    m = smm(p)
+                    m_array = np.vstack([m_array, [i * 94 + j, m]])
+                    p_array = np.vstack([p_array, [i * 94 + j, p]])
+                    z = z + 1
+                OOD_scores_flattened.append(m)
+                j = j + 1
+            i = i + 1
+        OOD_scores_2D_list = make2D(OOD_scores_flattened, args.number_windows)
+        # OOD_scores_2D_list = make2D(OOD_scores_flattened, args.n_seqs)
+        iD_scores_2D_list = OOD_score_to_iD_score(OOD_scores_2D_list)
+        iD_scores_windows = collapse_to_1D(iD_scores_2D_list)
+        # if ('in' in bi3dof_simple["test_clips"]):
+        if ('in.in' in args.data_file):
+            GT = 0
+            scores_of_only_in_points.extend(iD_scores_windows)
+
+        else:
+            GT = 1
+            scores_of_only_out_points.extend(iD_scores_windows)
+        GTs_for_each_window = [GT for _ in range(len(iD_scores_windows))]
+
+        if GT == 1:
+            iD_scores_2D_list_of_OOD_traces_only = iD_scores_2D_list
+
+        iD_scores_all.extend(iD_scores_windows)
+        GTs_all.extend(GTs_for_each_window)
+
+    auroc = roc_auc_score(GTs_all, iD_scores_all)
+    # TNR, tau = getTNR(scores_of_only_in_points, scores_of_only_out_points)
+    precision, recall, f1, fpr, fnr = getPrecisionRecallF1(scores_of_only_in_points, scores_of_only_out_points)
+    time_end = time.time();
+    print("time_sum: ",time_end-time_start)
+    print(f'(AUROC, fnr): ({auroc}, {fnr})')
+    print(f'(precision, recall, f1, Fpr): ({precision}, {recall}, {f1},{fpr})')

@@ -25,28 +25,28 @@ frame_lens = {
 	# 'out_replay': [50, 50, 50, 50, 50, 51, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
     'validate': [123, 122, 121, 121, 122, 122, 123, 123, 123, 122, 122, 123, 122, 122]}
 bi3dof_simple_test_validate = {
-    "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
+    "model_file": "./rainy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
     # "model_file": "./carla_models/bi3dof-simple-600epoch-6seq.pt",
     "network": "simple",
-    "test_clips": "F:/data/data/snowy_dataset/st-vae-icad-feature/calibration.calibration",
+    "test_clips": "F:/data/data/rainy_dataset/st-vae-icad-feature/calibration.calibration",
     "frames_per_clip": frame_lens['validate']
 }
 bi3dof_simple_test_in = {
-    "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
+    "model_file": "./rainy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
     # "model_file": "./carla_models/bi3dof-simple-600epoch-6seq.pt",
     "network": "simple",
-    "test_clips": "F:/data/data/snowy_dataset/st-vae-icad-feature/in.test",
+    "test_clips": "F:/data/data/rainy_dataset/st-vae-icad-feature/in.test",
     "frames_per_clip": frame_lens['in']
 }
 
 def getOutBi3DOF(type_of_OOD):
-    features_folder = "F:/data/data/snowy_dataset/st-vae-icad-feature/"  # Change to "../NTU_features_rainy_only/" for rainy
+    features_folder = "F:/data/data/rainy_dataset/st-vae-icad-feature/"  # Change to "../NTU_features_rainy_only/" for rainy
     bi3dof_simple_test_out = {
         # "model_file" : lambda model_save_folder: "{}/bi3dof-simple-600epoch-6seq-seed{}.pt".format(model_save_folder, SEED), # "model/nuscenes-mini/bi3dof-simple-600epoch.pt",
-        "model_file": "./snowy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
+        "model_file": "./rainy_models/bi3dof-simple-600epoch-141seq-seed2-4nd.pt",
         "network": "simple",
         "test_clips": features_folder + "{}.test".format('out'),  # "data/nuscenes-v1.0-mini.test",
-        "frames_per_clip": frame_lens['out_snowy']
+        "frames_per_clip": frame_lens['out_rainy']
     }
     return bi3dof_simple_test_out
 
@@ -54,7 +54,7 @@ def getOutBi3DOF(type_of_OOD):
 def calc_cal_ce_loss():  # for calibration datapoint, we want one randomly sampled window for 1 datapoint
 
     ce_loss_list = []
-    calc_save_path = f"./snowy_models/nc_calibration_vae_600epoch.npy"
+    calc_save_path = f"./rainy_models/nc_calibration_vae_600epoch.npy"
     for idx, bi3dof_simple in enumerate([bi3dof_simple_test_validate]):  # i.e. for traces in [iD traces, OOD traces]
         # print("bi3dof_simple: ",bi3dof_simple
         model, args = load_model(bi3dof_simple)
@@ -88,7 +88,7 @@ def run(type_of_OOD):
     for idx, bi3dof_simple in enumerate([bi3dof_simple_test_in, getOutBi3DOF(type_of_OOD)]):
         time_start = time.time()
         calc_cal_ce_loss()
-        calc_save_path = f"./snowy_models/nc_calibration_vae_600epoch.npy"
+        calc_save_path = f"./rainy_models/nc_calibration_vae_600epoch.npy"
         model, args = load_model(bi3dof_simple)
         h, v = compute_score(model, args)
         test_loss_list = [h[i] + v[i]  for i in range(len(h))]
@@ -150,6 +150,6 @@ def run(type_of_OOD):
 
 
 if __name__ == "__main__":
-    for type_of_OOD in ['out_snowy']:
+    for type_of_OOD in ['out_rainy']:
         run(type_of_OOD)
 

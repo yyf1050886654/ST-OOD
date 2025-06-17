@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # Basic Config
     parser.add_argument("--task", type=str, default="carla", help="carla or drift")
-    parser.add_argument("--carla_task", type=str, default="foggy", help="Carla dataset subtask")
+    parser.add_argument("--carla_task", type=str, default="rainy", help="Carla dataset subtask")
     # Dataset
     parser.add_argument("--data_path_prefix", type=str, default="F:/data/data", help="Dataset path prefix")
     # Model Parameters
